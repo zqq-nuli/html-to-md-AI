@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTML → MD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="app">
+      <header class="header">
+        <div class="logo">
+          <span class="logo-icon">⚡</span>
+          <span class="logo-text">html<span class="accent">→</span>md</span>
+        </div>
+        <div class="header-actions">
+          <button id="btn-lang" class="btn-lang" type="button" title="Switch language"></button>
+          <span class="badge">WASM</span>
+        </div>
+      </header>
+
+      <div class="actions">
+        <button id="btn-page" class="btn btn-primary" type="button">
+          <span class="btn-icon">📄</span>
+          <span data-i18n="convertPage"></span>
+        </button>
+        <button id="btn-selection" class="btn btn-secondary" type="button">
+          <span class="btn-icon">✂️</span>
+          <span data-i18n="convertSelection"></span>
+        </button>
+      </div>
+
+      <div id="status" class="status hidden"></div>
+
+      <div id="output-area" class="output-area hidden">
+        <div class="output-header">
+          <span id="output-title" class="output-title"></span>
+          <div class="output-actions">
+            <button id="btn-copy" class="btn-icon-action" title="Copy to clipboard">📋</button>
+            <button id="btn-download" class="btn-icon-action" title="Download .md file">💾</button>
+          </div>
+        </div>
+        <textarea id="output" class="output" readonly spellcheck="false"></textarea>
+        <div class="output-meta">
+          <span id="char-count"></span>
+          <span id="line-count"></span>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <span class="shortcut">Alt+M</span> <span data-i18n="quickConvert"></span>
+      </footer>
+    </div>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
