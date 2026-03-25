@@ -81,6 +81,34 @@ body {
   gap: 6px;
 }
 
+.btn-settings {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-settings:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-glow);
+}
+
+.btn-settings:hover svg {
+  transform: rotate(45deg);
+}
+
+.btn-settings svg {
+  transition: transform 0.3s ease;
+}
+
 .btn-lang {
   font-family: var(--font-mono);
   font-size: 11px;
@@ -329,7 +357,7 @@ body {
   border-top: 1px solid var(--border);
 }
 
-.shortcut {
+.shortcut-key {
   font-family: var(--font-mono);
   font-size: 10px;
   background: var(--bg-elevated);

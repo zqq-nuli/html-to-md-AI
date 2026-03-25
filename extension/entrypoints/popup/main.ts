@@ -1,11 +1,11 @@
 import './style.css';
-import { type Locale, type MessageKey, detectLocale, saveLocale, t, toggleLocale } from '../../utils/i18n';
+import { type Locale, type MessageKey, detectLocale, loadLocale, saveLocale, t, toggleLocale } from '../../utils/i18n';
 
 const btnPage = document.getElementById('btn-page') as HTMLButtonElement;
 const btnSelection = document.getElementById('btn-selection') as HTMLButtonElement;
 const btnCopy = document.getElementById('btn-copy') as HTMLButtonElement;
 const btnDownload = document.getElementById('btn-download') as HTMLButtonElement;
-const btnLang = document.getElementById('btn-lang') as HTMLButtonElement;
+const btnSettings = document.getElementById('btn-settings') as HTMLButtonElement;
 const statusEl = document.getElementById('status') as HTMLDivElement;
 const outputArea = document.getElementById('output-area') as HTMLDivElement;
 const outputEl = document.getElementById('output') as HTMLTextAreaElement;
@@ -21,7 +21,6 @@ function applyLocale() {
     const key = el.dataset.i18n as MessageKey;
     el.textContent = t(locale, key);
   });
-  btnLang.textContent = t(locale, 'langSwitch');
   document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en';
   updateMeta();
 }
@@ -85,14 +84,12 @@ async function convert(type: 'convertPage' | 'convertSelection') {
 
 // --- Event listeners ---
 
+btnSettings.addEventListener('click', () => {
+  chrome.runtime.openOptionsPage();
+});
+
 btnPage.addEventListener('click', () => convert('convertPage'));
 btnSelection.addEventListener('click', () => convert('convertSelection'));
-
-btnLang.addEventListener('click', () => {
-  locale = toggleLocale(locale);
-  saveLocale(locale);
-  applyLocale();
-});
 
 btnCopy.addEventListener('click', async () => {
   try {
@@ -124,5 +121,8 @@ btnDownload.addEventListener('click', () => {
 
 outputEl.addEventListener('input', updateMeta);
 
-// Init
-applyLocale();
+// --- Async init ---
+(async () => {
+  locale = await loadLocale();
+  applyLocale();
+})();

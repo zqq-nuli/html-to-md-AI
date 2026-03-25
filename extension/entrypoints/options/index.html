@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="manifest.open_in_tab" content="true" />
+    <title>HTML→MD Settings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <div class="brand">
+          <span class="brand-icon">⚡</span>
+          <span class="brand-text">html<span class="accent">→</span>md</span>
+        </div>
+        <h1 class="title" data-i18n="settings"></h1>
+      </header>
+
+      <main class="content">
+        <!-- Auto-download -->
+        <div class="card">
+          <div class="card-row">
+            <div class="card-info">
+              <span class="card-label" data-i18n="autoDownload"></span>
+              <span class="card-desc" data-i18n="autoDownloadDesc"></span>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="setting-auto-download" />
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Keyboard shortcut -->
+        <div class="card">
+          <div class="card-row">
+            <div class="card-info">
+              <span class="card-label" data-i18n="shortcutLabel"></span>
+              <span class="card-desc" data-i18n="shortcutDesc"></span>
+            </div>
+            <kbd class="kbd">Alt + M</kbd>
+          </div>
+        </div>
+
+        <!-- Language -->
+        <div class="card">
+          <div class="card-row">
+            <div class="card-info">
+              <span class="card-label" data-i18n="language"></span>
+              <span class="card-desc" data-i18n="languageDesc"></span>
+            </div>
+            <button id="setting-lang" class="lang-btn" type="button"></button>
+          </div>
+        </div>
+      </main>
+
+      <footer class="footer">
+        <span class="version">v1.0.2</span>
+        <span class="sep">&middot;</span>
+        <a href="https://github.com/zqq-nuli/html-to-md-AI" target="_blank" rel="noopener" class="link">GitHub</a>
+      </footer>
+    </div>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

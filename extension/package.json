@@ -2,7 +2,7 @@
   "name": "html-to-md",
   "description": "Convert web pages to clean Markdown for AI consumption",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.2",
   "type": "module",
   "scripts": {
     "dev": "wxt",

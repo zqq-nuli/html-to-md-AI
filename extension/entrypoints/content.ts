@@ -1,13 +1,11 @@
 export default defineContentScript({
   matches: ['<all_urls>'],
   main() {
-    const STORAGE_KEY = 'html-to-md-auto-download';
-
-    function getAutoDownload(): boolean {
-      try { return localStorage.getItem(STORAGE_KEY) === 'true'; } catch { return false; }
-    }
-    function setAutoDownload(v: boolean) {
-      try { localStorage.setItem(STORAGE_KEY, String(v)); } catch { /* ignore */ }
+    async function getAutoDownload(): Promise<boolean> {
+      try {
+        const result = await chrome.storage.local.get('html-to-md-auto-download');
+        return result['html-to-md-auto-download'] === true;
+      } catch { return false; }
     }
 
     function makeFilename(title: string): string {
@@ -30,12 +28,12 @@ export default defineContentScript({
       URL.revokeObjectURL(url);
     }
 
-    function isZh(): boolean {
+    async function getLocale(): Promise<string> {
       try {
-        const saved = localStorage.getItem('html-to-md-locale');
-        if (saved) return saved === 'zh';
+        const result = await chrome.storage.local.get('html-to-md-locale');
+        if (result['html-to-md-locale']) return result['html-to-md-locale'];
       } catch { /* ignore */ }
-      return (navigator.language || '').startsWith('zh');
+      return (navigator.language || '').startsWith('zh') ? 'zh' : 'en';
     }
 
     const MODAL_STYLES = `
@@ -150,53 +148,6 @@ export default defineContentScript({
       textarea::-webkit-scrollbar-thumb { background: #252540; border-radius: 4px; }
       textarea::-webkit-scrollbar-thumb:hover { background: #3a3a55; }
 
-      /* --- Checkbox row --- */
-      .option-label {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 14px;
-        background: #111120;
-        border: 1px solid #1a1a30;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: border-color 0.15s;
-        font-size: 12.5px;
-        color: #8888a0;
-        user-select: none;
-        line-height: 1.4;
-      }
-      .option-label:hover { border-color: #2a2a48; color: #b0b0c8; }
-
-      input[type="checkbox"] {
-        appearance: none;
-        -webkit-appearance: none;
-        width: 18px;
-        height: 18px;
-        border: 2px solid #3a3a55;
-        border-radius: 4px;
-        background: transparent;
-        cursor: pointer;
-        position: relative;
-        flex-shrink: 0;
-        transition: all 0.15s;
-      }
-      input[type="checkbox"]:checked {
-        background: #00e5a0;
-        border-color: #00e5a0;
-      }
-      input[type="checkbox"]:checked::after {
-        content: '';
-        position: absolute;
-        left: 5px;
-        top: 1px;
-        width: 5px;
-        height: 10px;
-        border: solid #0c0c18;
-        border-width: 0 2px 2px 0;
-        transform: rotate(45deg);
-      }
-
       /* --- Footer --- */
       .footer {
         display: flex;
@@ -252,10 +203,11 @@ export default defineContentScript({
       }
     `;
 
-    function showResultModal(markdown: string, title: string) {
-      const zh = isZh();
+    async function showResultModal(markdown: string, title: string) {
+      const lang = await getLocale();
+      const zh = lang === 'zh';
 
-      if (getAutoDownload()) {
+      if (await getAutoDownload()) {
         downloadMarkdown(markdown, title);
         showToast(zh ? '✅ 已自动下载 Markdown 文件' : '✅ Markdown file auto-downloaded');
         return;
@@ -298,10 +250,6 @@ export default defineContentScript({
           </div>
           <div class="body">
             <textarea spellcheck="false" readonly></textarea>
-            <label class="option-label">
-              <input type="checkbox" id="htmd-cb" />
-              ${zh ? '以后不再弹出，自动下载 Markdown 文件' : "Don't show again — auto-download .md file next time"}
-            </label>
           </div>
           <div class="footer">
             <button class="btn-copy">📋 ${zh ? '复制' : 'Copy'}</button>
@@ -317,7 +265,6 @@ export default defineContentScript({
       const textarea = shadow.querySelector('textarea') as HTMLTextAreaElement;
       textarea.value = markdown;
 
-      const checkbox = shadow.querySelector('#htmd-cb') as HTMLInputElement;
       const overlayEl = shadow.querySelector('.overlay') as HTMLElement;
 
       function close() {
@@ -338,7 +285,6 @@ export default defineContentScript({
       shadow.querySelector('.btn-cancel')!.addEventListener('click', close);
 
       shadow.querySelector('.btn-confirm')!.addEventListener('click', () => {
-        if (checkbox.checked) setAutoDownload(true);
         downloadMarkdown(markdown, title || document.title);
         close();
       });
