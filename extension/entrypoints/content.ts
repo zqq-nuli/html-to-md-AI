@@ -351,6 +351,14 @@ export default defineContentScript({
       document.addEventListener('keydown', onKey);
     }
 
+    // --- Keyboard shortcut (fallback for when chrome.commands doesn't fire) ---
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.altKey && e.key.toLowerCase() === 'm' && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
+        e.preventDefault();
+        chrome.runtime.sendMessage({ type: 'convertPage' });
+      }
+    });
+
     // --- Message handler ---
     chrome.runtime.onMessage.addListener((message: any, _sender, sendResponse) => {
       if (message.type === 'getHTML') {
